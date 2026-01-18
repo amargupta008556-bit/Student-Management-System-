@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Management System</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 20px;
+    }
+    h2 {
+        text-align: center;
+    }
+    form {
+        background: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    input {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0;
+    }
+    button {
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background: #007bff;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+
+<h2>Student College Management System</h2>
+
+<form id="studentForm">
+    <input type="text" id="roll" placeholder="Roll No" required>
+    <input type="text" id="name" placeholder="Student Name" required>
+    <input type="text" id="father" placeholder="Father Name">
+    <input type="text" id="mother" placeholder="Mother Name">
+    <input type="text" id="address" placeholder="Address">
+    <input type="text" id="department" placeholder="Department">
+    <input type="text" id="subjects" placeholder="Subjects">
+    <input type="number" id="marks" placeholder="Marks">
+    <input type="number" id="percentage" placeholder="Percentage">
+    <input type="text" id="grade" placeholder="Grade">
+    <input type="number" id="attendance" placeholder="Attendance (%)">
+    <input type="text" id="mobile" placeholder="Mobile Number">
+    
+    <button type="submit">Add Student</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Roll</th>
+            <th>Name</th>
+            <th>Father</th>
+            <th>Mother</th>
+            <th>Address</th>
+            <th>Department</th>
+            <th>Subjects</th>
+            <th>Marks</th>
+            <th>Percentage</th>
+            <th>Grade</th>
+            <th>Attendance</th>
+            <th>Mobile</th>
+        </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+</table>
+
+<script>
+document.getElementById("studentForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let table = document.getElementById("studentTable");
+    let row = table.insertRow();
+
+    let data = [
+        roll.value, name.value, father.value, mother.value,
+        address.value, department.value, subjects.value,
+        marks.value, percentage.value, grade.value,
+        attendance.value, mobile.value
+    ];
+
+    data.forEach(value => {
+        let cell = row.insertCell();
+        cell.innerText = value;
+    });
+
+    document.getElementById("studentForm").reset();
+});
+</script>
+
+</body>
+</html>
