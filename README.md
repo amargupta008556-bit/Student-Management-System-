@@ -13,4 +13,9 @@ Open `index.html` in browser.
 
 ### 📋 Students Page (More Views)
 ![Students Page 2](SCREENSHOTS/students.png2.jpg)
+## ✏️ Edit Student Page (Version 2)
+![Edit Student V2](SCREENSHOTS/edit-student.png2.jpg)
+
+## ✏️ Edit Student Page (Version 3)
+![Edit Student V3](SCREENSHOTS/edit-student.png3.jpg)
 Author: Muskan Gupta
