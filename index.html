@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management System</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 0 10px; }
+header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+nav ul { list-style: none; display: flex; justify-content: center; padding: 10px 0; }
+nav ul li { margin: 0 10px; }
+nav ul li a { color: white; text-decoration: none; font-weight: bold; }
+main { margin: 20px auto; max-width: 800px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+h2 { margin-bottom: 10px; color: #333; }
+form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+form input { padding: 8px; flex: 1; min-width: 150px; }
+form button { flex: none; padding: 8px 12px; border: none; border-radius: 4px; background: #4CAF50; color: white; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+th { background-color: #f2f2f2; cursor: pointer; }
+.edit-btn { background-color: #2196F3; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+.delete-btn { background-color: #f44336; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.save-btn { background-color: #4CAF50; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+.cancel-btn { background-color: #777; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+.search-input { width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
+@media(max-width:600px){ nav ul{ flex-direction: column; } nav ul li{ margin:5px 0; } form{ flex-direction: column; } table, th, td{ font-size: 14px; } }
+</style>
+</head>
+<body>
+
+<header>
+<h1>Student Management System</h1>
+<nav>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Add Student</a></li>
+<li><a href="#">Student List</a></li>
+</ul>
+</nav>
+</header>
+
+<main>
+<section>
+<h2>Add New Student</h2>
+<form id="studentForm">
+<input type="text" id="name" placeholder="Student Name" required>
+<input type="text" id="class" placeholder="Class" required>
+<button type="submit">Add Student</button>
+</form>
+
+<h2>Search Students</h2>
+<input type="text" id="searchInput" class="search-input" placeholder="Search by Name or Class">
+</section>
+
+<section>
+<h2>Student List</h2>
+<table id="studentTable">
+<thead>
+<tr>
+<th onclick="sortTable('id')">ID &#x25B2;&#x25BC;</th>
+<th onclick="sortTable('name')">Name &#x25B2;&#x25BC;</th>
+<th onclick="sortTable('class')">Class &#x25B2;&#x25BC;</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+</main>
+
+<footer style="text-align:center; padding:15px; margin-top:20px; background:#333; color:white;">
+&copy; 2026 Student Management System
+</footer>
+
+<script>
+let students = JSON.parse(localStorage.getItem('students')) || [];
+let idCounter = students.length ? Math.max(...students.map(s => s.id)) + 1 : 1;
+let sortDirection = {id:true, name:true, class:true};
+
+const form = document.getElementById('studentForm');
+const tbody = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+const searchInput = document.getElementById('searchInput');
+
+function saveToLocalStorage(){ localStorage.setItem('students', JSON.stringify(students)); }
+
+function renderTable(filteredStudents=students){
+tbody.innerHTML = '';
+filteredStudents.forEach(student => {
+const row = tbody.insertRow();
+row.insertCell(0).innerText = student.id;
+row.insertCell(1).innerText = student.name;
+row.insertCell(2).innerText = student.class;
+const actionCell = row.insertCell(3);
+actionCell.innerHTML = `
+<button class="edit-btn" onclick="editStudent(${student.id})">Edit</button>
+<button class="delete-btn" onclick="deleteStudent(${student.id})">Delete</button>`;
+});
+}
+
+form.addEventListener('submit', function(e){
+e.preventDefault();
+const name = document.getElementById('name').value.trim();
+const sClass = document.getElementById('class').value.trim();
+if(!name || !sClass) return alert("Please fill all fields!");
+students.push({id:idCounter++, name, class:sClass});
+saveToLocalStorage();
+renderTable();
+form.reset();
+});
+
+function editStudent(id){
+const row = Array.from(tbody.rows).find(r => r.cells[0].innerText == id);
+const student = students.find(s => s.id === id);
+row.cells[1].innerHTML = `<input type="text" id="editName${id}" value="${student.name}">`;
+row.cells[2].innerHTML = `<input type="text" id="editClass${id}" value="${student.class}">`;
+row.cells[3].innerHTML = `
+<button class="save-btn" onclick="saveEdit(${id})">Save</button>
+<button class="cancel-btn" onclick="renderTable()">Cancel</button>`;
+}
+
+function saveEdit(id){
+const newName = document.getElementById(`editName${id}`).value.trim();
+const newClass = document.getElementById(`editClass${id}`).value.trim();
+if(!newName || !newClass) return alert("All fields required!");
+const student = students.find(s => s.id === id);
+student.name = newName;
+student.class = newClass;
+saveToLocalStorage();
+renderTable();
+}
+
+function deleteStudent(id){
+if(confirm("Are you sure you want to delete this student?")){
+students = students.filter(s => s.id !== id);
+saveToLocalStorage();
+renderTable();
+}
+}
+
+searchInput.addEventListener('input', function(){
+const query = this.value.toLowerCase();
+const filtered = students.filter(s => s.name.toLowerCase().includes(query) || s.class.toLowerCase().includes(query));
+renderTable(filtered);
+});
+
+function sortTable(key){
+students.sort((a,b)=>{
+if(a[key].toString().toLowerCase() > b[key].toString().toLowerCase()) return sortDirection[key]?1:-1;
+if(a[key].toString().toLowerCase() < b[key].toString().toLowerCase()) return sortDirection[key]?-1:1;
+return 0;
+});
+sortDirection[key] = !sortDirection[key];
+renderTable();
+}
+
+renderTable();
+</script>
+
+</body>
+</html>
