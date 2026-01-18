@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Student</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Edit Student</h2>
+
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="text" id="class" placeholder="Class">
+    <input type="number" id="roll" placeholder="Roll Number">
+
+    <button onclick="updateStudent()">Update Student</button>
+
+    <div class="back">
+        <a href="students.html">⬅ Back to Students</a>
+    </div>
+</div>
+
+<script>
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+    let index = localStorage.getItem("editIndex");
+
+    if (index !== null && students[index]) {
+        document.getElementById("name").value = students[index].name;
+        document.getElementById("class").value = students[index].class;
+        document.getElementById("roll").value = students[index].roll;
+    }
+
+    function updateStudent() {
+        let name = document.getElementById("name").value;
+        let studentClass = document.getElementById("class").value;
+        let roll = document.getElementById("roll").value;
+
+        if (name === "" || studentClass === "" || roll === "") {
+            alert("Please fill all fields");
+            return;
+        }
+
+        students[index] = {
+            name: name,
+            class: studentClass,
+            roll: roll
+        };
+
+        localStorage.setItem("students", JSON.stringify(students));
+        localStorage.removeItem("editIndex");
+
+        alert("Student Updated Successfully ✅");
+        window.location.href = "students.html";
+    }
+</script>
+
+</body>
+</html>
